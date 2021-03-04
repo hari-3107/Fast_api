@@ -165,6 +165,13 @@ def create_bookevent(db: Session, bookevent: schemas.BookEvent):
     if bookevent.package not in package_names :
         raise HTTPException(status_code=404, detail="Invalid package name")
     else :
+        #sql_query_marriage= text("SELECT count(id) from book_event where event='marriage'")
+        sql_query_marriage = text("SELECT count(id) from book_event where (event='marriage' and start_date= +\"bookevent.start_date\"+ and end_date= +\"bookevent.start_date+\"+)")
+        result = db.execute(sql_query_marriage)
+        #print(type(result))
+        #print(result.first()[0])
+        number_of_marriages = result.first()[0]
+        print(number_of_marriages)
         db.add(db_bookevent)
         db.commit()
         db.refresh(db_bookevent)
